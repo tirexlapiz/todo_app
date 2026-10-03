@@ -19,9 +19,16 @@ class BunnyTodoApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
 
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFFF5D83)),
+        fontFamily: 'Times New Roman',
 
-        scaffoldBackgroundColor: const Color(0xFFFFF8FA),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF123B5D),
+          primary: const Color(0xFF123B5D),
+          secondary: const Color(0xFFCDECCF),
+          surface: const Color(0xFFF4FAF2),
+        ),
+
+        scaffoldBackgroundColor: const Color(0xFFF4FAF2),
       ),
 
       home: const HomeScreen(),

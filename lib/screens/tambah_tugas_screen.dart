@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:todo_app/controller/tambah_tugas_controller.dart';
+import 'package:todo_app/models/todo.dart';
 
 class TambahTugasScreen extends StatefulWidget {
-  const TambahTugasScreen({super.key});
+  const TambahTugasScreen({super.key, this.todo});
+
+  final Todo? todo;
 
   @override
   State<TambahTugasScreen> createState() => _TambahTugasScreenState();
@@ -16,7 +19,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
   void initState() {
     super.initState();
 
-    controller = TambahTugasController();
+    controller = TambahTugasController(todo: widget.todo);
 
     controller.addListener(() {
       if (mounted) {
@@ -45,29 +48,44 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
       return;
     }
 
-    final berhasil = await controller.simpanTugas();
+    try {
+      final berhasil = await controller.simpanTugas();
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    if (berhasil) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Tugas berhasil ditambahkan 🐰')),
-      );
+      if (berhasil) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              widget.todo == null
+                  ? 'Tugas berhasil ditambahkan 🐰'
+                  : 'Tugas berhasil diperbarui 🐰',
+            ),
+          ),
+        );
 
-      Navigator.pop(context, true);
+        Navigator.pop(context, true);
+      }
+    } catch (e) {
+      debugPrint('ERROR SIMPAN TUGAS: $e');
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal menyimpan tugas: $e')));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FA),
+      backgroundColor: const Color(0xFFF4FAF2),
 
       // ======================================================
       // APP BAR
       // ======================================================
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFF8FA),
+        backgroundColor: const Color(0xFFF4FAF2),
 
         elevation: 0,
 
@@ -78,15 +96,15 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
           icon: const Icon(
             Icons.arrow_back_ios_new_rounded,
-            color: Color(0xFF40343A),
+            color: Color(0xFF46604F),
             size: 21,
           ),
         ),
 
-        title: const Text(
-          'Tambah Tugas',
+        title: Text(
+          widget.todo == null ? 'Tambah Tugas' : 'Edit Tugas',
           style: TextStyle(
-            color: Color(0xFF30272C),
+            color: Color(0xFF1D3548),
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
@@ -114,12 +132,12 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFFFD9E7), Color(0xFFF1D8EE)],
+                  colors: [Color(0xFFDDF0DC), Color(0xFFCDECCF)],
                 ),
 
                 borderRadius: BorderRadius.circular(25),
 
-                border: Border.all(color: const Color(0xFFFFC3D3)),
+                border: Border.all(color: const Color(0xFFB7DDB9)),
               ),
 
               child: Row(
@@ -134,39 +152,39 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                       color: Colors.white,
 
                       border: Border.all(
-                        color: const Color(0xFFFFAFC4),
+                        color: const Color(0xFFB7DDB9),
                         width: 2,
                       ),
                     ),
 
-                    child: const Center(
-                      child: Text('🐰', style: TextStyle(fontSize: 34)),
-                    ),
+                    child: Center(child: Image.asset('lib/img/kucing.png')),
                   ),
 
                   const SizedBox(width: 13),
 
-                  const Expanded(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
                         Text(
-                          'Tugas baru? ✨',
+                          widget.todo == null ? 'Tugas baru? ✨' : 'Edit tugas ✨',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: Color(0xFF40343A),
+                            color: Color(0xFF1D3548),
                           ),
                         ),
 
-                        SizedBox(height: 4),
+                        const SizedBox(height: 4),
 
                         Text(
-                          'Yuk catat tugasmu supaya tidak lupa!',
+                          widget.todo == null
+                              ? 'Yuk catat tugasmu supaya tidak lupa!'
+                              : 'Perbarui detail tugasmu di sini.',
                           style: TextStyle(
                             fontSize: 12,
-                            color: Color(0xFF806B74),
+                            color: Color(0xFF60798C),
                           ),
                         ),
                       ],
@@ -186,7 +204,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF30272C),
+                color: Color(0xFF1D3548),
               ),
             ),
 
@@ -202,7 +220,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
                 prefixIcon: const Icon(
                   Icons.edit_outlined,
-                  color: Color(0xFFFF5D83),
+                  color: Color(0xFF123B5D),
                 ),
 
                 filled: true,
@@ -218,14 +236,14 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(17),
 
-                  borderSide: const BorderSide(color: Color(0xFFF1DCE2)),
+                  borderSide: const BorderSide(color: Color(0xFFD4E8D4)),
                 ),
 
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(17),
 
                   borderSide: const BorderSide(
-                    color: Color(0xFFFF6A8D),
+                    color: Color(0xFF123B5D),
                     width: 1.5,
                   ),
                 ),
@@ -242,7 +260,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF30272C),
+                color: Color(0xFF1D3548),
               ),
             ),
 
@@ -260,7 +278,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
                 prefixIcon: const Padding(
                   padding: EdgeInsets.only(bottom: 72),
-                  child: Icon(Icons.notes_outlined, color: Color(0xFFFF5D83)),
+                  child: Icon(Icons.notes_outlined, color: Color(0xFF123B5D)),
                 ),
 
                 filled: true,
@@ -276,14 +294,14 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(17),
 
-                  borderSide: const BorderSide(color: Color(0xFFF1DCE2)),
+                  borderSide: const BorderSide(color: Color(0xFFD4E8D4)),
                 ),
 
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(17),
 
                   borderSide: const BorderSide(
-                    color: Color(0xFFFF6A8D),
+                    color: Color(0xFF123B5D),
                     width: 1.5,
                   ),
                 ),
@@ -300,7 +318,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF30272C),
+                color: Color(0xFF1D3548),
               ),
             ),
 
@@ -314,7 +332,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
                 borderRadius: BorderRadius.circular(17),
 
-                border: Border.all(color: const Color(0xFFF1DCE2)),
+                border: Border.all(color: const Color(0xFFD4E8D4)),
               ),
 
               child: DropdownButtonHideUnderline(
@@ -325,7 +343,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
 
                   icon: const Icon(
                     Icons.keyboard_arrow_down_rounded,
-                    color: Color(0xFFFF5D83),
+                    color: Color(0xFF123B5D),
                   ),
 
                   items: const [
@@ -336,7 +354,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                           Icon(
                             Icons.menu_book_rounded,
                             size: 20,
-                            color: Color(0xFF8060A8),
+                            color: Color(0xFF46604F),
                           ),
                           SizedBox(width: 10),
                           Text('Belajar'),
@@ -351,7 +369,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                           Icon(
                             Icons.school_rounded,
                             size: 20,
-                            color: Color(0xFFD95778),
+                            color: Color(0xFF123B5D),
                           ),
                           SizedBox(width: 10),
                           Text('Tugas Kuliah'),
@@ -366,7 +384,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                           Icon(
                             Icons.work_rounded,
                             size: 20,
-                            color: Color(0xFF67678F),
+                            color: Color(0xFF46604F),
                           ),
                           SizedBox(width: 10),
                           Text('Kerjaan'),
@@ -393,7 +411,7 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                 onPressed: controller.isLoading ? null : simpanTugas,
 
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFF5D83),
+                  backgroundColor: const Color(0xFF123B5D),
 
                   foregroundColor: Colors.white,
 
@@ -413,16 +431,16 @@ class _TambahTugasScreenState extends State<TambahTugasScreen> {
                           color: Colors.white,
                         ),
                       )
-                    : const Row(
+                    : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
 
                         children: [
-                          Icon(Icons.add_task_rounded, size: 22),
+                          const Icon(Icons.add_task_rounded, size: 22),
 
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
 
                           Text(
-                            'Simpan Tugas',
+                            widget.todo == null ? 'Simpan Tugas' : 'Simpan Perubahan',
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.bold,

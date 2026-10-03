@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:todo_app/controller/home_controller.dart';
+import 'package:todo_app/models/todo.dart';
 import 'tambah_tugas_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -35,10 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  // ==========================================================
-  // BUKA TAMBAH TUGAS
-  // ==========================================================
-
   Future<void> bukaTambahTugas() async {
     final hasil = await Navigator.push(
       context,
@@ -54,9 +51,20 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  // ==========================================================
-  // ICON KATEGORI
-  // ==========================================================
+  Future<void> bukaEditTugas(Todo todo) async {
+    final hasil = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return TambahTugasScreen(todo: todo);
+        },
+      ),
+    );
+
+    if (hasil == true) {
+      await controller.loadTodos();
+    }
+  }
 
   IconData iconKategori(String kategori) {
     if (kategori == 'Belajar') {
@@ -74,10 +82,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return Icons.check_circle;
   }
 
-  // ==========================================================
-  // CHIP KATEGORI
-  // ==========================================================
-
   Widget kategoriChip(String kategori) {
     final bool aktif = controller.kategoriDipilih == kategori;
 
@@ -94,12 +98,12 @@ class _HomeScreenState extends State<HomeScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 9),
 
         decoration: BoxDecoration(
-          color: aktif ? const Color(0xFFFF5D83) : const Color(0xFFFFF1F5),
+          color: aktif ? const Color(0xFF123B5D) : const Color(0xFFEAF5E9),
 
           borderRadius: BorderRadius.circular(20),
 
           border: Border.all(
-            color: aktif ? const Color(0xFFFF5D83) : const Color(0xFFF0D9E1),
+            color: aktif ? const Color(0xFF123B5D) : const Color(0xFFD4E8D4),
           ),
         ),
 
@@ -112,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 iconKategori(kategori),
                 size: 14,
 
-                color: aktif ? Colors.white : const Color(0xFF6D5660),
+                color: aktif ? Colors.white : const Color(0xFF60798C),
               ),
 
             if (kategori != 'Semua') const SizedBox(width: 5),
@@ -124,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
 
-                color: aktif ? Colors.white : const Color(0xFF5E4A53),
+                color: aktif ? Colors.white : const Color(0xFF3D596F),
               ),
             ),
           ],
@@ -132,10 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // ==========================================================
-  // CARD TUGAS
-  // ==========================================================
 
   Widget cardTugas(dynamic todo) {
     return Container(
@@ -150,15 +150,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
         border: Border.all(
           color: todo.isCompleted
-              ? const Color(0xFFEADDE2)
-              : const Color(0xFFFFD6E1),
+              ? const Color(0xFFDBE7DE)
+              : const Color(0xFFD4EBD2),
 
           width: 1.2,
         ),
 
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFFF789A).withOpacity(0.07),
+            color: const Color(0xFF789F7A).withValues(alpha: 0.10),
 
             blurRadius: 12,
 
@@ -169,9 +169,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
       child: Row(
         children: [
-          // ==================================================
-          // CHECKBOX
-          // ==================================================
           GestureDetector(
             onTap: () {
               controller.ubahStatus(todo);
@@ -185,10 +182,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: BoxShape.circle,
 
                 color: todo.isCompleted
-                    ? const Color(0xFFFF5D83)
+                    ? const Color(0xFF123B5D)
                     : Colors.transparent,
 
-                border: Border.all(color: const Color(0xFFFF668A), width: 2),
+                border: Border.all(color: const Color(0xFF123B5D), width: 2),
               ),
 
               child: todo.isCompleted
@@ -199,9 +196,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
           const SizedBox(width: 12),
 
-          // ==================================================
-          // INFORMASI TUGAS
-          // ==================================================
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,10 +210,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   decoration: BoxDecoration(
                     color: todo.kategori == 'Belajar'
-                        ? const Color(0xFFE8E0F6)
+                        ? const Color(0xFFDCEEDC)
                         : todo.kategori == 'Tugas Kuliah'
-                        ? const Color(0xFFFFDCE7)
-                        : const Color(0xFFE1E1F1),
+                        ? const Color(0xFFCDECCF)
+                        : const Color(0xFFE6F1E5),
 
                     borderRadius: BorderRadius.circular(9),
                   ),
@@ -229,7 +223,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     style: const TextStyle(
                       fontSize: 10,
-                      color: Color(0xFF66535C),
+                      color: Color(0xFF46604F),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -239,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                 // NAMA TUGAS
                 Text(
-                  todo.nama_tugas,
+                  todo.namaTugas,
 
                   maxLines: 1,
 
@@ -250,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     fontWeight: FontWeight.w600,
 
-                    color: const Color(0xFF332A2F),
+                    color: const Color(0xFF1D3548),
 
                     decoration: todo.isCompleted
                         ? TextDecoration.lineThrough
@@ -271,7 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(
                       fontSize: 11,
 
-                      color: const Color(0xFF8B7780),
+                      color: const Color(0xFF60798C),
 
                       decoration: todo.isCompleted
                           ? TextDecoration.lineThrough
@@ -286,16 +280,19 @@ class _HomeScreenState extends State<HomeScreen> {
           // MENU
           // ==================================================
           PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert, color: Color(0xFF66535C)),
+            icon: const Icon(Icons.more_vert, color: Color(0xFF46604F)),
 
             onSelected: (value) {
-              if (value == 'hapus') {
+              if (value == 'edit') {
+                bukaEditTugas(todo);
+              } else if (value == 'hapus') {
                 tampilkanDialogHapus(todo);
               }
             },
 
             itemBuilder: (context) {
               return const [
+                PopupMenuItem(value: 'edit', child: Text('Edit')),
                 PopupMenuItem(value: 'hapus', child: Text('Hapus')),
               ];
             },
@@ -319,7 +316,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
           content: Text(
             'Yakin ingin menghapus '
-            '"${todo.nama_tugas}"?',
+            '"${todo.namaTugas}"?',
           ),
 
           actions: [
@@ -355,13 +352,13 @@ class _HomeScreenState extends State<HomeScreen> {
     final daftarTampil = controller.todosYangDitampilkan;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8FA),
+      backgroundColor: const Color(0xFFF4FAF2),
 
       // ======================================================
       // APP BAR
       // ======================================================
       appBar: AppBar(
-        backgroundColor: const Color(0xFFFFF8FA),
+        backgroundColor: const Color(0xFFF4FAF2),
 
         elevation: 0,
 
@@ -376,22 +373,20 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
 
-                color: const Color(0xFFFFE3EB),
+                color: const Color(0xFFE6F1E5),
 
-                border: Border.all(color: const Color(0xFFFFB2C7)),
+                border: Border.all(color: const Color(0xFFCDECCF)),
               ),
 
-              child: const Center(
-                child: Text('🐰', style: TextStyle(fontSize: 23)),
-              ),
+              child: Center(child: Image.asset('lib/img/kucing.png')),
             ),
 
             const SizedBox(width: 10),
 
             const Text(
-              'Bunny To-do',
+              'Neko To-do',
               style: TextStyle(
-                color: Color(0xFFB92E58),
+                color: Color(0xFF123B5D),
 
                 fontSize: 21,
 
@@ -402,11 +397,11 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
 
         actions: const [
-          Icon(Icons.favorite, color: Color(0xFFFF5D83), size: 25),
+          Icon(Icons.favorite, color: Color(0xFF123B5D), size: 25),
 
           SizedBox(width: 20),
 
-          Icon(Icons.notifications, color: Color(0xFF45373D), size: 24),
+          Icon(Icons.notifications, color: Color(0xFF46604F), size: 24),
 
           SizedBox(width: 18),
         ],
@@ -421,11 +416,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
           children: [
             const Text(
-              'Hai Teman Bunny! 🐰',
+              'Hai Teman! 🐱',
               style: TextStyle(
                 fontSize: 21,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF30272C),
+                color: Color(0xFF1D3548),
               ),
             ),
 
@@ -436,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ? 'Hari ini ada tugas yang menantimu!'
                   : 'Hari ini ada ${controller.todos.length} tugas yang menantimu!',
 
-              style: const TextStyle(fontSize: 13, color: Color(0xFF806B74)),
+              style: const TextStyle(fontSize: 13, color: Color(0xFF60798C)),
             ),
 
             const SizedBox(height: 18),
@@ -449,12 +444,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFFFFD9E7), Color(0xFFF0D7ED)],
+                  colors: [Color(0xFFDDF0DC), Color(0xFFCDECCF)],
                 ),
 
                 borderRadius: BorderRadius.circular(28),
 
-                border: Border.all(color: const Color(0xFFFFC1D2)),
+                border: Border.all(color: const Color(0xFFB7DDB9)),
               ),
 
               child: Row(
@@ -471,15 +466,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: Colors.white,
 
                       border: Border.all(
-                        color: const Color(0xFFFFABC1),
+                        color: const Color(0xFFB7DDB9),
 
                         width: 2,
                       ),
                     ),
 
-                    child: const Center(
-                      child: Text('🐰', style: TextStyle(fontSize: 36)),
-                    ),
+                    child: Center(child: Image.asset('lib/img/kucing.png')),
                   ),
 
                   const SizedBox(width: 12),
@@ -498,12 +491,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       child: const Text(
-                        '“Yuk semangat, selesaikan tugasmu lalu makan wortel enak! 🥕”',
+                        '“Yuk semangat, selesaikan tugasmu lalu bersantai! 🐱”',
 
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF40363A),
+                          color: Color(0xFF1D3548),
                         ),
                       ),
                     ),
@@ -524,7 +517,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF30272C),
+                color: Color(0xFF1D3548),
               ),
             ),
 
@@ -558,7 +551,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF30272C),
+                    color: Color(0xFF1D3548),
                   ),
                 ),
 
@@ -571,7 +564,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFD7E2),
+                    color: const Color(0xFFCDECCF),
 
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -582,7 +575,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFD9416A),
+                      color: Color(0xFF123B5D),
                     ),
                   ),
                 ),
@@ -599,25 +592,25 @@ class _HomeScreenState extends State<HomeScreen> {
                 padding: EdgeInsets.symmetric(vertical: 40),
 
                 child: Center(
-                  child: CircularProgressIndicator(color: Color(0xFFFF5D83)),
+                  child: CircularProgressIndicator(color: Color(0xFF123B5D)),
                 ),
               )
             // =================================================
             // KOSONG
             // =================================================
             else if (daftarTampil.isEmpty)
-              const Padding(
-                padding: EdgeInsets.symmetric(vertical: 45),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 45),
 
                 child: Column(
                   children: [
-                    Text('🐰', style: TextStyle(fontSize: 45)),
+                    Image.asset('lib/img/kucing.png', width: 60, height: 60),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
-                    Text(
+                    const Text(
                       'Belum ada tugas',
-                      style: TextStyle(color: Color(0xFF8B7780)),
+                      style: TextStyle(color: Color(0xFF60798C)),
                     ),
                   ],
                 ),
@@ -637,7 +630,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: bukaTambahTugas,
 
-        backgroundColor: const Color(0xFFFF5D83),
+        backgroundColor: const Color(0xFF123B5D),
 
         elevation: 6,
 

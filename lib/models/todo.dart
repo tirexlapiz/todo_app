@@ -1,7 +1,7 @@
 class Todo {
   int? id;
 
-  String nama_tugas;
+  String namaTugas;
 
   String deskripsi;
 
@@ -11,7 +11,7 @@ class Todo {
 
   Todo({
     this.id,
-    required this.nama_tugas,
+    required this.namaTugas,
     required this.deskripsi,
     required this.kategori,
     this.isCompleted = false,
@@ -20,7 +20,7 @@ class Todo {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'nama_tugas': nama_tugas,
+      'nama_tugas': namaTugas,
       'deskripsi': deskripsi,
       'kategori': kategori,
       'isCompleted': isCompleted ? 1 : 0,
@@ -30,7 +30,7 @@ class Todo {
   factory Todo.fromMap(Map<String, dynamic> map) {
     return Todo(
       id: map['id'],
-      nama_tugas: map['nama_tugas'],
+      namaTugas: map['nama_tugas'],
       deskripsi: map['deskripsi'],
       kategori: map['kategori'],
       isCompleted: map['isCompleted'] == 1,

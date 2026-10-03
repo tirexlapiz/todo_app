@@ -82,7 +82,7 @@ class HomeController extends ChangeNotifier {
   Future<void> ubahStatus(Todo todo) async {
     final todoBaru = Todo(
       id: todo.id,
-      nama_tugas: todo.nama_tugas,
+      namaTugas: todo.namaTugas,
       deskripsi: todo.deskripsi,
       kategori: todo.kategori,
       isCompleted: !todo.isCompleted,

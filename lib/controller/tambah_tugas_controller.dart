@@ -4,7 +4,16 @@ import '../database/database_helper.dart';
 import '../models/todo.dart';
 
 class TambahTugasController extends ChangeNotifier {
+  TambahTugasController({Todo? todo}) : _todo = todo {
+    if (todo != null) {
+      namaController.text = todo.namaTugas;
+      deskripsiController.text = todo.deskripsi;
+      kategori = todo.kategori;
+    }
+  }
+
   final DatabaseHelper databaseHelper = DatabaseHelper.instance;
+  final Todo? _todo;
 
   // Controller untuk input
   final TextEditingController namaController = TextEditingController();
@@ -38,23 +47,24 @@ class TambahTugasController extends ChangeNotifier {
       return false;
     }
 
+    isLoading = true;
+    notifyListeners();
     try {
-      isLoading = true;
-      notifyListeners();
-
       final todo = Todo(
-        nama_tugas: namaController.text.trim(),
+        id: _todo?.id,
+        namaTugas: namaController.text.trim(),
         deskripsi: deskripsiController.text.trim(),
         kategori: kategori,
-        isCompleted: false,
+        isCompleted: _todo?.isCompleted ?? false,
       );
 
-      await databaseHelper.insertTodo(todo);
+      if (_todo == null) {
+        await databaseHelper.insertTodo(todo);
+      } else {
+        await databaseHelper.updateTodo(todo);
+      }
 
       return true;
-    } catch (e) {
-      debugPrint('ERROR SIMPAN TUGAS: $e');
-      return false;
     } finally {
       isLoading = false;
       notifyListeners();
